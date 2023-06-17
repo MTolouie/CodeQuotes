@@ -2,10 +2,30 @@
 
 public partial class MainPage : ContentPage
 {
-	public MainPage()
+    List<string> Quotes = new();
+
+    public MainPage()
 	{
 		InitializeComponent();
 	}
+
+    protected override void OnAppearing()
+    {
+        LoadMauiAsset();
+    }
+
+
+    async Task LoadMauiAsset()
+    {
+        using var stream = await FileSystem.OpenAppPackageFileAsync("quotes.txt");
+        using var reader = new StreamReader(stream);
+
+        while (reader.Peek() != -1)
+        {
+            Quotes.Add(reader.ReadLine());
+        }
+    }
+
 
     private void btnGenerateQuote_Clicked(object sender, EventArgs e)
     {
@@ -34,8 +54,8 @@ public partial class MainPage : ContentPage
 
         background.Background = gradient;
 
-
-
+        var index = rnd.Next(Quotes.Count);
+        quote.Text = Quotes[index];
 
     }
 }
